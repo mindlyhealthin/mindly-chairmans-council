@@ -15,7 +15,7 @@ function App() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/api/council/query', {
+      const response = await fetch('/api/council/quehttps://friendly-space-winner-5g76wjxqg65p3vv9w-8000.app.github.dev/api/council/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

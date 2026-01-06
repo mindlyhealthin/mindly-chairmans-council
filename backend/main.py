@@ -1,9 +1,13 @@
+import sys
+import os
+sys.path.insert(0, os.path.dirname(__file__))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import httpx
-from backend.config import settings
-from backend.healthcare_prompts import (
+from config import settings
+from healthcare_prompts import (
     CLINICAL_ADVISOR_SYSTEM_PROMPT,
     PATIENT_ADVOCATE_SYSTEM_PROMPT,
     BUSINESS_STRATEGIST_SYSTEM_PROMPT,

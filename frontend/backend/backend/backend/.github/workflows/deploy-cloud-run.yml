@@ -1,0 +1,69 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: mindly-health
+  REGION: us-central1
+  SERVICE_NAME: mindly-chairmans-council
+  IMAGE_NAME: mindly-chairmans-council
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          export_default_credentials: true
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for GCR
+        run: |
+          gcloud auth configure-docker
+
+      - name: Build Docker image
+        run: |
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          docker tag gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Push Docker image to GCR
+        run: |
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --set-env-vars OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }} \
+            --set-env-vars FIREBASE_PROJECT_ID=${{ env.PROJECT_ID }} \
+            --memory 512Mi \
+            --cpu 1 \
+            --timeout 60
+
+      - name: Get Cloud Run URL
+        run: |
+          URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --platform managed --region ${{ env.REGION }} --format='value(status.url)')
+          echo "Cloud Run URL: $URL"
+          echo "CLOUD_RUN_URL=$URL" >> $GITHUB_ENV
+
+      - name: Test deployment
+        run: |
+          curl -s ${{ env.CLOUD_RUN_URL }}/health | head -20
