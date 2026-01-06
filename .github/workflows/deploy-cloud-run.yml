@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_ID: mindly-health
+  PROJECT_ID: mindly-health-pro-2-1387-a6093
   REGION: us-central1
   SERVICE_NAME: mindly-chairmans-council
   IMAGE_NAME: mindly-chairmans-council
