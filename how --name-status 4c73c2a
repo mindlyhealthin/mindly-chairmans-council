@@ -1,0 +1,5 @@
+[33m4c73c2a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Production deployment: Add Firebase, authentication, domain config, and Cloud Run pipeline
+[33m767aecc[m Add complete backend and frontend code
+[33m604526e[m Create SETUP_LINKS.md
+[33m07c54f7[m Create QUICKSTART.md
+[33m6a16381[m Create pyproject.toml
