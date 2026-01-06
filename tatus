@@ -1,0 +1,5 @@
+[33m13983c3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix: Replace setup-gcloud action with direct gcloud auth for Artifact Registry access
+[33m372a533[m Confirm: Verify credentials parameter is used (not service_account_key)
+[33m75450ca[m Fix: Change service_account_key to credentials in setup-gcloud action
+[33mb899416[m Update PROJECT_ID to correct GCP project
+[33m2888eba[m Fix Dockerfile: Copy entire project and chdir to backend folder
